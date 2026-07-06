@@ -136,7 +136,7 @@ if st.button("AI予想を開始する", type="primary", use_container_width=True
     if df_shutuba is None:
         st.error(distance_or_err)
     elif 'オッズ' not in df_shutuba.columns:
-        # ★追加: そもそもオッズが存在しない（発表前など）場合のエラー処理
+        # そもそもオッズが存在しない（発表前など）場合のエラー処理
         st.error("⚠️ オッズ情報が見つかりません。レース前日などでオッズがまだ発表されていない可能性があります。")
         st.info(f"参考（取得できた列）: {df_shutuba.columns.tolist()}")
     else:
@@ -155,9 +155,12 @@ if st.button("AI予想を開始する", type="primary", use_container_width=True
         if 'distance' in feature_names:
             X_pred['distance'] = distance_or_err
             
-        # ★本来はSupabaseから「過去の勝率」や「前走データ」を引いてくる必要がありますが、
+        # 本来はSupabaseから「過去の勝率」や「前走データ」を引いてくる必要がありますが、
         # 今回はデモとして、残りの特徴量にはAIの学習に影響の少ない「中央値(0)」を埋めます。
         X_pred = X_pred.fillna(0)
+        
+        # ★追加: LightGBMエラー対策。全列を明示的に数値(float)に変換する
+        X_pred = X_pred.astype(float)
         
         # === AIによる予測 ===
         with st.spinner("AIが勝率を計算中..."):
