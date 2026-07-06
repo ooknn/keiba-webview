@@ -202,7 +202,7 @@ if st.button("AI予想を開始する", type="primary", use_container_width=True
             return ''
             
         st.dataframe(
-            df_display.style.applymap(highlight_expected, subset=['期待値']), 
+            df_display.style.map(highlight_expected, subset=['期待値']), 
             use_container_width=True, 
             hide_index=True
         )
